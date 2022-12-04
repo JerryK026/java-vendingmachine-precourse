@@ -1,0 +1,55 @@
+## 정의한 클래스
+- VendingMachine
+  - Coin [enum]
+  - CoinBox
+  - Money
+- Shelf
+  - Product
+    - ProductName
+    - Money
+      -> 일급 객체
+    - Amount
+      -> 일급 객체
+
+- InputView
+- OutputView
+
+## 기능 구현 설계
+- [ ] 자판기 보유 금액을 설정한다 - Application#insertCoins
+  - [ ] 자판기 보유 금액을 입력받는다 - InputView#readCoins
+    - [ ] 숫자인지 검사한다 - InputView#validateNumber
+  - [ ] 10으로 나누어 떨어지는지 검사한다 - Money#validateTens
+  - [ ] 동전을 무작위로 생산한다 - VendingMachine#insertCoins
+    -> CoinBox가 아닌 VendingMachine에서 동전을 만든 이유 : CoinBox에 들어갈 내용을 나중에 setter로 넣으면 초기화되지 않은 상태에서 접근할 위험이 있기 때문에 아예 생성할 때 넣는다
+- [ ] 동전 보유량을 출력한다 - Application#printHoldings
+  - [ ] 생산한 동전의 총 보유량을 반환한다 - VendingMachine#getholdings
+  - [ ] 동전 보유량을 출력한다 - OutputView#printHoldings
+- [ ] 상품을 등록한다 - Application#registerProducts
+  - [ ] 상품을 입력받는다 - InputView#readProducts
+    - [ ] 입력받은 상품을 `;`을 기준으로 분리한다 - InputView#split
+    - [ ] 상품을 진열한다 - Shelf#display
+      -> Map<ProductName, Product>
+      - [ ] 중복된 상품이라면 해당 상품에 수량을 추가한다 - Product#addAmount
+      - [ ] 입력받은 상품의 포맷을 검사한다 - Product#validateFormat
+- [ ] 사용자가 현금을 집어넣는다 - Application#insertMoney
+  - [ ] 금액을 입력받는다 - InputView#readMoney
+    - [ ] 입력받은 금액이 숫자인지 검사한다 - InputView#validateNumber
+    - [ ] 10으로 나누어 떨어지는지 검사한다 - Money#validateTens
+  - [ ] 자판기에 돈을 입력한다 - VendingMachine
+  -> 이 시점에서 VendingMachine이 생성된다
+- [ ] 상품을 구입한다 - Application#buy
+  - [ ] 구입할 상품을 입력받는다 - InputView#readProduct
+  - [ ] 상품을 구입한다 - VendingMachine#buy
+    - [ ] 가판대에서 상품을 내린다 - Shelf#off
+      - [ ] 가판대에 있는 상품인지 검사한다 - Shelf#validateHavingOne
+    - [ ] 금액을 지불한다 - Money#minus
+      - [ ] 잔여 금액이 0이 넘는지 검사한다 - Money#validateLowerBound
+- [ ] 물건 구매를 종료한다
+  - [ ] 물건을 더 살 수 있는지 확인한다 - VendingMachine#isPurchasable
+    - [ ] 가판대에 물건이 남아있는지 확인한다 - Shelf#isRemaining
+    - [ ] 잔돈으로 구입할 수 있는 물건이 있는지 확인하다 - Shelf#doesHavingPurchasableProduct
+- [ ] 거스름돈을 반환한다 - Application#printChanges
+  - [ ] 자판기에서 거스름돈을 받는다 - VendingMachine#getChanges
+    - [ ] 거스름 돈을 계산한다 - CoinBox#Calculate
+    - [ ] 잔여 금액에서 거스름돈을 뺀다 - Money#minus
+  - [ ] 거스름돈을 출력한다 - OutputView#printChanges
